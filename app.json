@@ -29,14 +29,23 @@
       "package": "com.davidqueiroz.financy"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static",
+      "name": "Financy - Controle Financeiro",
+      "shortName": "Financy",
+      "startUrl": "/",
+      "display": "standalone",
+      "backgroundColor": "#ffffff",
+      "themeColor": "#6200ee",
+      "description": "Controle suas finanças de forma simples e rápida."
     },
     "plugins": [
       "expo-router",
       "expo-sqlite"
     ],
     "scheme": "financy",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "extra": {
       "router": {
         "origin": false

@@ -73,13 +73,23 @@ export class WebTransactionRepository implements ITransactionRepository {
 
   private getTransactions(): Transaction[] {
     if (typeof localStorage === 'undefined') return [];
-    const data = localStorage.getItem(WebTransactionRepository.STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    try {
+      const data = localStorage.getItem(WebTransactionRepository.STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.error('Erro ao ler do LocalStorage:', e);
+      return [];
+    }
   }
 
   private saveTransactions(transactions: Transaction[]) {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(WebTransactionRepository.STORAGE_KEY, JSON.stringify(transactions));
+      try {
+        localStorage.setItem(WebTransactionRepository.STORAGE_KEY, JSON.stringify(transactions));
+        console.log(`[WebRepo] ${transactions.length} transações salvas no LocalStorage.`);
+      } catch (e) {
+        console.error('Erro ao salvar no LocalStorage:', e);
+      }
     }
   }
 
