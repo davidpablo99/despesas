@@ -9,6 +9,7 @@ import {
   ScrollView,
   Switch,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { createTransactionRepository } from "../src/database/transactionRepository";
@@ -64,6 +65,7 @@ export default function AddTransaction() {
     EXPENSE_CATEGORIES[7],
   ); // Outros default
   const [isFixed, setIsFixed] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Update categories when type changes
   useEffect(() => {
@@ -102,12 +104,16 @@ export default function AddTransaction() {
   };
 
   const handleSave = async () => {
+    if (saving) return;
+
     if (rawValue <= 0 || !description) {
       Alert.alert("Erro", "Por favor, preencha valor e descrição.");
       return;
     }
 
+    setSaving(true);
     try {
+      console.log("Iniciando salvamento...", { rawValue, description, type, isFixed });
       const repository = createTransactionRepository(db);
       await repository.create({
         amount: rawValue,
@@ -117,10 +123,19 @@ export default function AddTransaction() {
         date: Date.now(),
         is_fixed: isFixed,
       });
-      router.back();
+      console.log("Salvo com sucesso!");
+      
+      // Na web, replace é mais seguro para garantir que a lista atualize
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace("/");
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao salvar:", error);
       Alert.alert("Erro", "Não foi possível salvar a transação.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -280,12 +295,18 @@ export default function AddTransaction() {
             style={[
               styles.saveButton,
               { backgroundColor: mainColor, shadowColor: mainColor },
+              saving && { opacity: 0.7 }
             ]}
             onPress={handleSave}
+            disabled={saving}
           >
-            <Text style={styles.saveButtonText}>
-              {type === "income" ? "Salvar Receita" : "Salvar Despesa"}
-            </Text>
+            {saving ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.saveButtonText}>
+                {type === "income" ? "Salvar Receita" : "Salvar Despesa"}
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>
