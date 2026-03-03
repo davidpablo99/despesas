@@ -16,7 +16,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.davidqueiroz.financy"
+      "bundleIdentifier": "com.davidqueiroz.financy",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -33,6 +36,14 @@
       "expo-sqlite"
     ],
     "scheme": "financy",
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c93651bf-1fd5-4357-8695-be5dc2fcd956"
+      }
+    }
   }
 }
